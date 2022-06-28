@@ -37,8 +37,8 @@ spec:
           - name: REDIS_PASS
             valueFrom:
               secretKeyRef:
-                name: env-secrets-dev #Edit this 
-                key: REDIS_PASS   #Edit this
+                name: env-secrets-dev
+                key: REDIS_PASS   
           volumeMounts:
             - name: dev-volume
               mountPath: /data
