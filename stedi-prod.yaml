@@ -1,0 +1,10 @@
+# This step deploys to production
+- name: 'gcr.io/cloud-builders/gcloud'
+ id: Deploy to Production
+ args:
+ - 'beta'
+ - 'builds'
+ - 'triggers'
+ - 'run'
+ - '2b1c6bb1-5cef-467e-b889-4a0f618e4299'
+ - '--branch=main'
