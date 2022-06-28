@@ -47,20 +47,3 @@ spec:
           gcePersistentDisk:
             pdName: dev-redis
             fsType: ext4
-spec:
-      containers:
-        - name: tecca-stedi
-          image: gcr.io/cubs-consulting/stedi
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secrets-dev
-                  key: REDIS_PASS
-            - name: REDIS_HOST
-              value: "redis-stedi-dev"
-            - name: REDIS_PORT
-              value: "6379"
-            - name: REDIS_DB
-              value: "0"
-            - name: KAFKA_BROKER
