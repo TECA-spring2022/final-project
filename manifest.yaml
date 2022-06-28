@@ -51,7 +51,7 @@ spec:
 ---
 spec:
       containers:
-        - name: tecca-stedi
+        - name: teca-stedi
           image: gcr.io/cubs-consulting/stedi
           env:
             - name: REDIS_PASSWORD
