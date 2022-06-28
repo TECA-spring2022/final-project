@@ -1,32 +1,32 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: easy-rent-dev-redis
+  name: dev-redis
 spec:
   ports:
     - port: 6379
       name: redis
   clusterIP: None
   selector:
-    app: easy-rent-dev-redis
+    app: dev-redis
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: easy-rent-dev-redis
+  name: dev-redis
 spec:
   selector:
     matchLabels:
-      app: easy-rent-dev-redis  # has to match .spec.template.metadata.labels
-  serviceName: easy-rent-dev-redis
+      app: dev-redis  # has to match .spec.template.metadata.labels
+  serviceName: dev-redis
   replicas: 1
   template:
     metadata:
       labels:
-        app: easy-rent-dev-redis  # has to match .spec.selector.matchLabels
+        app: dev-redis  # has to match .spec.selector.matchLabels
     spec:
       containers:
-        - name: easy-rent-dev-redis
+        - name: dev-redis
           image: redis:3.2-alpine
           imagePullPolicy: Always
           args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
@@ -40,10 +40,27 @@ spec:
                 name: env-secrets-dev
                 key: REDIS_PASS
           volumeMounts:
-            - name: easy-rent-dev-volume
+            - name: dev-volume
               mountPath: /data
       volumes:
-        - name: easy-rent-dev-volume
+        - name: dev-volume
           gcePersistentDisk:
-            pdName: easy-rent-dev-redis
+            pdName: dev-redis
             fsType: ext4
+spec:
+      containers:
+        - name: tecca-stedi
+          image: gcr.io/cubs-consulting/stedi
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secrets-dev
+                  key: REDIS_PASS
+            - name: REDIS_HOST
+              value: "redis-stedi-dev"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
+            - name: KAFKA_BROKER
