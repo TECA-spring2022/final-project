@@ -49,20 +49,24 @@ spec:
     targetPort: 3000
 
 ---
-spec:
-      containers:
-        - name: teca-stedi
-          image: gcr.io/cubs-consulting/stedi
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secrets-dev
-                  key: REDIS_PASS
-            - name: REDIS_HOST
-              value: "redis-stedi-dev"
-            - name: REDIS_PORT
-              value: "6379"
-            - name: REDIS_DB
-              value: "0"
-            - name: KAFKA_BROKER
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: Redis-env-var
+# spec:
+#       containers:
+#         - name: teca-stedi
+#           image: gcr.io/cubs-consulting/stedi
+#           env:
+#             - name: REDIS_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: redis-secrets-dev
+#                   key: REDIS_PASS
+#             - name: REDIS_HOST
+#               value: "redis-stedi-dev"
+#             - name: REDIS_PORT
+#               value: "6379"
+#             - name: REDIS_DB
+#               value: "0"
+#             - name: KAFKA_BROKER
