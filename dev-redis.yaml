@@ -1,32 +1,32 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dev-redis
+  name: redis-stedi-dev
 spec:
   ports:
     - port: 6379
       name: redis
   clusterIP: None
   selector:
-    app: dev-redis
+    app: redis-stedi-dev
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: dev-redis
+  name: redis-stedi-dev
 spec:
   selector:
     matchLabels:
-      app: dev-redis  # has to match .spec.template.metadata.labels
-  serviceName: dev-redis
+      app: redis-stedi-dev  # has to match .spec.template.metadata.labels
+  serviceName: easy-rent-dev-redis
   replicas: 1
   template:
     metadata:
       labels:
-        app: dev-redis  # has to match .spec.selector.matchLabels
+        app: redis-stedi-dev  # has to match .spec.selector.matchLabels
     spec:
       containers:
-        - name: dev-redis
+        - name: easy-rent-dev-redis
           image: redis:3.2-alpine
           imagePullPolicy: Always
           args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
@@ -37,13 +37,17 @@ spec:
           - name: REDIS_PASS
             valueFrom:
               secretKeyRef:
-                name: env-secrets-dev
-                key: REDIS_PASS   
+                name: redis-secrets-dev
+                key: REDIS_PASS
           volumeMounts:
-            - name: dev-volume
+            - name: redis-dev-volume
               mountPath: /data
-      volumes:
-        - name: dev-volume
-          gcePersistentDisk:
-            pdName: dev-redis
-            fsType: ext4
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-dev-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
