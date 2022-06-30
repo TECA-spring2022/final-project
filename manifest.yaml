@@ -46,7 +46,6 @@ spec:
               port: 3000
             initialDelaySeconds: 3
             periodSeconds: 3
-                containers:
           
 --- #This three - separates two documents in a yaml file
 #addding load balancers handles the web or user traffic to the K8s deployment
