@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: teca-stedi
-          image: "gcr.io/teca-350016/stedi-teca:latest" 
+          image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
           #you can get your project id in the google cloud
           command: ["npm"]
           args: ["run","start"]
