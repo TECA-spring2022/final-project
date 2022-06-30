@@ -16,21 +16,6 @@ spec:
         - name: teca-stedi
           image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
           #you can get your project id in the google cloud
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secrets-dev
-                  key: REDIS_PASS
-            - name: REDIS_HOST
-              value: "redis-stedi-dev"
-            - name: REDIS_PORT
-              value: "6379"
-            - name: REDIS_DB
-              value: "0"
-            - name: KAFKA_BROKER
-          command: ["npm"]
-          args: ["run","start"]
           ports:
             - containerPort: 3000  
           resources:
@@ -40,12 +25,32 @@ spec:
             requests:
               cpu: ".1"
               memory: "250Mi"
+          readiness Probe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /
               port: 3000
             initialDelaySeconds: 3
             periodSeconds: 3
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secrets-dev
+                  key: REDIS_PASS
+            - name: REDIS_HOST
+              value: "dev-stedi-redis-final"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
+            - name: KAFKA_BROKER
+
           
 --- #This three - separates two documents in a yaml file
 #addding load balancers handles the web or user traffic to the K8s deployment
