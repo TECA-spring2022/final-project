@@ -27,8 +27,4 @@ steps:
       - "run"
       - "gcr.io/$PROJECT_ID/stedi-teca:latest"
 
-      
-
-
-
 ---
