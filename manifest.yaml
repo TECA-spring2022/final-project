@@ -15,8 +15,7 @@ spec:
       containers:
         - name: teca-stedi
           image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
-          #you can get your project id in the google cloud
-
+          #you can get your project id in the google clouded
           command: ["npm"]
           args: ["run","start"]
           ports:
@@ -34,7 +33,7 @@ spec:
               port: 4567
             initialDelaySeconds: 3
             periodSeconds: 3          
-            env:
+          env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
