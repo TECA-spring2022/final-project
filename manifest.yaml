@@ -16,19 +16,7 @@ spec:
         - name: teca-stedi
           image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
           #you can get your project id in the google cloud
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secrets-dev
-                  key: REDIS_PASS
-            - name: REDIS_HOST
-              value: "redis-stedi-dev"
-            - name: REDIS_PORT
-              value: "6379"
-            - name: REDIS_DB
-              value: "0"
-            - name: KAFKA_BROKER
+
           command: ["npm"]
           args: ["run","start"]
           ports:
@@ -45,7 +33,20 @@ spec:
               path: /
               port: 4567
             initialDelaySeconds: 3
-            periodSeconds: 3
+            periodSeconds: 3          
+            env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secrets-dev
+                  key: REDIS_PASS
+            - name: REDIS_HOST
+              value: "redis-stedi-dev"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
+            - name: KAFKA_BROKER
           
 ---
  #This three - separates two documents in a yaml file
