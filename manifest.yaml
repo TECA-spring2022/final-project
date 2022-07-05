@@ -29,8 +29,6 @@ spec:
             - name: REDIS_DB
               value: "0"
             - name: KAFKA_BROKER
-          command: ["npm"]
-          args: ["run","start"]
           ports:
             - containerPort: 4567 
           resources:
