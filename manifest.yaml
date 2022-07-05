@@ -32,11 +32,7 @@ spec:
           command: ["npm"]
           args: ["run","start"]
           ports:
-<<<<<<< HEAD
-            - containerPort: 3000  
-=======
             - containerPort: 3000
->>>>>>> 391cedf455fe3f3893ca3231619a62a7cffb96db
           resources:
             limits:
               cpu: ".5"
