@@ -32,7 +32,7 @@ spec:
           command: ["npm"]
           args: ["run","start"]
           ports:
-            - containerPort: 3000  
+            - containerPort: 4567 
           resources:
             limits:
               cpu: ".5"
@@ -43,7 +43,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 3000
+              port: 4567
             initialDelaySeconds: 3
             periodSeconds: 3
           
@@ -60,4 +60,4 @@ spec:
   type: LoadBalancer
   ports:
   - port: 80
-    targetPort: 3000
+    targetPort: 4567
