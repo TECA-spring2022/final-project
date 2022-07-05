@@ -15,24 +15,7 @@ spec:
       containers:
         - name: teca-stedi
           image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
-          #you can get your project id in the google clouded
-          command: ["npm"]
-          args: ["run","start"]
-          ports:
-            - containerPort: 4567 
-          resources:
-            limits:
-              cpu: ".5"
-              memory: "500Mi"
-            requests:
-              cpu: ".1"
-              memory: "250Mi"
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 4567
-            initialDelaySeconds: 3
-            periodSeconds: 3          
+          #you can get your project id in the google cloud
           env:
             - name: REDIS_PASSWORD
               valueFrom:
@@ -46,6 +29,21 @@ spec:
             - name: REDIS_DB
               value: "0"
             - name: KAFKA_BROKER
+          ports:
+            - containerPort: 4567  
+          resources:
+            limits:
+              cpu: ".5"
+              memory: "500Mi"
+            requests:
+              cpu: ".1"
+              memory: "250Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4567
+            initialDelaySeconds: 3
+            periodSeconds: 3
           
 ---
  #This three - separates two documents in a yaml file
@@ -53,7 +51,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: teca-stedi-loadbalancer
+  name: tecastedi-loadbalancer
 spec:
   selector:
     app: teca-stedi
