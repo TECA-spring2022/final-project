@@ -26,5 +26,17 @@ steps:
     args: 
       - "run"
       - "gcr.io/$PROJECT_ID/stedi-teca-dev:latest"
+  - name: "gcr.io/cloud-builders/docker"
+    id: initalise intagration tests
+    args:
+      - build
+      - -t
+      - teca-stedi-tests
+      - /integration-tests
+  - name: "gcr.io/cloud-builders/docker"
+    id: run the intigration tests
+    args:
+      - run
+      - teca-stedi-tests 
 
 ---
