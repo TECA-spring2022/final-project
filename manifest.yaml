@@ -16,6 +16,7 @@ spec:
         - name: teca-stedi
           image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
           #you can get your project id in the google cloud
+          env:
             - name: REDIS_HOST
               value: "redis-stedi-dev"
             - name: REDIS_PORT
