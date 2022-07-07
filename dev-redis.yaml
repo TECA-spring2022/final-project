@@ -29,16 +29,10 @@ spec:
         - name: dev-redis
           image: redis:3.2-alpine
           imagePullPolicy: Always
-          args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
+          args: ["--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
             - containerPort: 6379
               name: redis
-          env:
-          - name: REDIS_PASS
-            valueFrom:
-              secretKeyRef:
-                name: redis-secrets-dev
-                key: REDIS_PASS
           volumeMounts:
             - name: redis-dev-volume
               mountPath: /data
