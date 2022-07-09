@@ -1,8 +1,26 @@
 {
+  "name": "final-project",
+  "version": "1.0.0",
+  "description": "This is the change",
+  "main": "adduser.test.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TECA-spring2022/final-project"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TECA-spring2022/final-project/issues"
+  },
+  "homepage": "https://github.com/cameronnealbeck/cit262individualrepo#readme",
   "dependencies": {
     "node": "^18.5.0"
   },
   "directories": {
     "test": "tests"
-  }
+  },
+  "type": "module"
 }
