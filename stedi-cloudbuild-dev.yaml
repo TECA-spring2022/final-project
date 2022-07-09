@@ -13,7 +13,7 @@ steps:
       - build
       - -t
       - teca-stedi-tests
-      - ./integration-tests
+      - login-test.js
   - name: "gcr.io/cloud-builders/docker"
     id: Push
     args:
