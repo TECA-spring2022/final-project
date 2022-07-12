@@ -1,4 +1,4 @@
-//import {login} from '../utils/login.js';
+import {login} from '../utils/login.js';
 
 it ("should create user", async ()=>{
     const createUserRequest ={
