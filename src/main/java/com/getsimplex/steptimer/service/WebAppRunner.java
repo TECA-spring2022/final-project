@@ -1,8 +1,11 @@
 package com.getsimplex.steptimer.service;
+
 /**
  © 2021 Sean Murdock
  * Created by sean on 8/10/2016 based on https://github.com/tipsy/spark-websocket/tree/master/src/main/java
  */
+
+
 import com.getsimplex.steptimer.model.*;
 import com.getsimplex.steptimer.utils.*;
 import com.google.gson.Gson;
@@ -11,26 +14,32 @@ import spark.Request;
 import spark.Filter;
 import spark.Response;
 import spark.Spark;
+
 import java.util.Date;
 import java.util.logging.Logger;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+
 import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 import static spark.Spark.*;
+
 public class WebAppRunner {
     private static Logger logger = Logger.getLogger(WebAppRunner.class.getName());
     public static void main(String[] args){
+
         Spark.port(getHerokuAssignedPort());
         staticFileLocation("/public");
         webSocket("/socket", DeviceWebSocketHandler.class);
         webSocket("/timeruiwebsocket", TimerUIWebSocket.class);
+
         after((Filter) (request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
             response.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
             response.header("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin,");
             response.header("Access-Control-Allow-Credentials", "true");
         });
-        //secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
+		//secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
+
         //post("/sensorUpdates", (req, res)-> WebServiceHandler.routeDeviceRequest(req));
         //post("/generateHistoricalGraph", (req, res)->routePdfRequest(req, res));
         //get("/readPdf", (req, res)->routePdfRequest(req, res));
@@ -55,6 +64,7 @@ public class WebAppRunner {
         post("/complexity", (req,res)->{
             Gson gson = new Gson();
             Boolean validPassword = CreateNewUser.validatePassword(gson.fromJson(req.body(), User.class).getPassword());
+
             if (validPassword){
                 res.status(200);
             } else{
@@ -81,6 +91,7 @@ public class WebAppRunner {
                 createNewCustomer(req, res);
                 response="Successfully created customer";
             }
+
             catch (AlreadyExistsException ae){
                 logger.info("User already exists");
                 System.out.println("User already exists");
@@ -88,6 +99,7 @@ public class WebAppRunner {
                 logger.info("Error creating customer");
                 response="Error creating customer";
             }
+
             catch (Exception e){
                 logger.warning("*** Error Creating Customer: "+e.getMessage());
                 System.out.println("*** Error Creating Customer: "+e.getMessage());
@@ -111,7 +123,9 @@ public class WebAppRunner {
                 return null;
             }
             return FindCustomer.handleRequest(req);
+
         });
+
         post("/login", (req, res)->loginUser(req, res));
         post("/twofactorlogin/:phoneNumber",(req, res) -> twoFactorLogin(req, res));
         post("/twofactorlogin", (req, res) ->{
@@ -136,6 +150,7 @@ public class WebAppRunner {
             } catch (Exception e){
                 res.status(401);
             }
+
             saveStepSession(req);
             return "Saved";
         });
@@ -150,20 +165,24 @@ public class WebAppRunner {
             }
             return riskScore(req.params(":customer"));
         }));
+
         options("/*",
                 (request, response) -> {
+
                     String accessControlRequestHeaders = request
                             .headers("Access-Control-Request-Headers");
                     if (accessControlRequestHeaders != null) {
                         response.header("Access-Control-Allow-Headers",
                                 accessControlRequestHeaders);
                     }
+
                     String accessControlRequestMethod = request
                             .headers("Access-Control-Request-Method");
                     if (accessControlRequestMethod != null) {
                         response.header("Access-Control-Allow-Methods",
                                 accessControlRequestMethod);
                     }
+
                     return "OK";
         });
         init();
@@ -184,64 +203,87 @@ public class WebAppRunner {
                 oneTimePassword.setLoginToken(loginToken);
                 oneTimePassword.setPhoneNumber(phoneNumber);
                 OneTimePasswordService.saveOneTimePassword(oneTimePassword);
+
                 SendText.send(phoneNumber, "STEDI OTP: "+String.valueOf(randomNum));
                 response.status(200);
+
             } else{
                 response.status(400);
                 logger.info("Unable to find user with phone number: "+phoneNumber);
                 System.out.println("Unable to find user with phone number: "+phoneNumber);
+
             }
         } catch (Exception e){
             response.status(500);
             logger.info("Error while looking up user "+phoneNumber+" "+e.getMessage());
             System.out.println("Error while looking up user "+phoneNumber+" "+e.getMessage());
         }
+
         if (user==null){
             return "Unable to find user with phone number: "+phoneNumber;
         } else{
             return "Ok";
         }
     }
+
     private static void userFilter(Request request, Response response) throws Exception{
         String tokenString = request.headers("suresteps.session.token");
+
             Optional<User> user = TokenService.getUserFromToken(tokenString);//
+
             Boolean tokenExpired = SessionValidator.validateToken(tokenString);
+
             if (user.isPresent() && tokenExpired && !user.get().isLocked()){//if a user is locked, we won't renew tokens until they are unlocked
                 TokenService.renewToken(tokenString);
                 return;
             }
+
             if (!user.isPresent()) { //Check to see if session expired
                 logger.info("Invalid user token: user not found using token: "+tokenString);
                 throw new Exception("Invalid user token: user not found using token: "+tokenString);
             }
+
             if (tokenExpired.equals(true)){
                 logger.info("Invalid user token: "+tokenString+" expired");
                 throw new Exception("Invalid user token: "+tokenString+" expired");
             }
+
     }
+
+
+
     public static void createNewCustomer(Request request, Response response) throws Exception{
             CreateNewCustomer.handleRequest(request);
     }
+
     private static String callUserDatabase(Request request)throws Exception{
         return CreateNewUser.handleRequest(request);
     }
+
     private static String loginUser(Request request, Response response) throws Exception{
         String responseText="";
+
         try{
+
             String token = responseText=LoginController.handleRequest(request);
             response.cookie("stedi-token",token);
         } catch(InvalidLoginException ile){
             response.status(401);
         }
+
         return responseText;
+
     }
+
     private static String riskScore(String email) throws Exception{
         return StepHistory.riskScore(email);
     }
+
     private static void saveStepSession(Request request) throws Exception{
         SaveRapidStepTest.save(request.body());
     }
-    
+
+	
     private static int getHerokuAssignedPort() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (processBuilder.environment().get("PORT") != null) {
@@ -249,4 +291,5 @@ public class WebAppRunner {
         }
         return Configuration.getConfiguration().getInt("suresteps.port"); //return default port if heroku-port isn't set (i.e. on localhost)
     }
+
 }
