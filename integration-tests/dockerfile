@@ -3,6 +3,6 @@ FROM node:16-alpine
 COPY . .
 
 # this run command breaks the docker image for the tests 
-#RUN npm install
+RUN npm install
 
 CMD ["npm", "run", "test"]
