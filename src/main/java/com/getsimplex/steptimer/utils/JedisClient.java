@@ -249,3 +249,31 @@ public class JedisClient {
     }
 
 }
+public static synchronized void hdel (String mapName, String key) throws Exception{
+    Jedis jedis = jedisPool.getResource();
+    try{
+        jedis.hdel(mapName, key);
+        jedisPool.returnResource(jedis);
+
+    } catch (Exception e){
+        jedisPool.returnBrokenResource(jedis);
+        throw new Exception("Tried setting: "+mapName+" key : "+key+" without success");
+    }
+}
+
+public static synchronized long zrem(String key, String value) throws Exception{
+
+    Jedis jedis = jedisPool.getResource();
+    try {
+        long result = jedis.zrem(key,value);
+        jedisPool.returnResource(jedis);
+        return result;
+    }
+
+    catch (Exception e){
+        jedisPool.returnBrokenResource(jedis);
+
+        throw new Exception("Tried to remove key: "+key+" value: "+value+" without success");
+
+    }
+}

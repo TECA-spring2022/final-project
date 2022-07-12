@@ -283,3 +283,8 @@ public class WebAppRunner {
     }
 
 }
+delete("/user/:username", (req,res)->{
+    userFilter(req,res);
+    CreateNewUser.deleteUser(req.params("username"));
+    return "deleted user";
+ });

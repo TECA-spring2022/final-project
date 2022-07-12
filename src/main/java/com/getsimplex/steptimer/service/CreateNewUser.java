@@ -129,3 +129,6 @@ public class CreateNewUser {
         return false;
     }
 }
+public static void deleteUser(String userName) throws Exception{
+    JedisData.deleteJedis(User.class, userName);
+}
