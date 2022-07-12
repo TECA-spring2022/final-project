@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/cameronnealbeck/cit262individualrepo#readme",
   "dependencies": {
+    "mocha": "^10.0.0",
     "node": "^18.5.0"
   },
   "directories": {
