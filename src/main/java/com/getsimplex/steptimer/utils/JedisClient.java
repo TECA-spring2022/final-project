@@ -150,23 +150,6 @@ public class JedisClient {
         }
     }
 
-    public static synchronized long zrem(String key, String value) throws Exception{
-
-        Jedis jedis = jedisPool.getResource();
-        try {
-            long result = jedis.zrem(key,value);
-            jedisPool.returnResource(jedis);
-            return result;
-        }
-
-        catch (Exception e){
-            jedisPool.returnBrokenResource(jedis);
-
-            throw new Exception("Tried to remove key: "+key+" value: "+value+" without success");
-
-        }
-    }
-
     public static synchronized void zremrangeByScore(String key, double start, double end) throws Exception{
 
         Jedis jedis = jedisPool.getResource();
