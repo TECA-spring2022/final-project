@@ -1,22 +1,22 @@
 //© 2021 Sean Murdock
-
+​
 package com.getsimplex.steptimer.utils;
-
-
+​
+​
 import com.typesafe.config.Config;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-
+​
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
+​
 /**
  * Created by Admin on 8/18/2016.
  */
 public class JedisClient {
-
+​
     private static Config config;
     private static String password;
     private static String host;
@@ -24,11 +24,11 @@ public class JedisClient {
     private static String dbName;
     private static String url;
     private static JedisPool jedisPool;
-
+​
     static {
         Config config = Configuration.getConfiguration();
         if (System.getenv("REDIS_HOST")!=null && !System.getenv("REDIS_HOST").isEmpty()){
-
+​
             password = System.getenv("REDIS_PASSWORD");
             host = System.getenv("REDIS_HOST");
             port = System.getenv("REDIS_PORT");
@@ -40,7 +40,7 @@ public class JedisClient {
             else{
                 jedisPool = new JedisPool(host, Integer.valueOf(port));
             }
-
+​
         } else{
             config = Configuration.getConfiguration();
             try {
@@ -57,11 +57,11 @@ public class JedisClient {
             } else{
                 jedisPool = new JedisPool(host, Integer.valueOf(port));
             }
-
+​
         }
-
+​
     }
-
+​
 //    private static synchronized Jedis getJedis(){
 //        Jedis jedis = jedisPool.getResource();
 //        try{
@@ -73,7 +73,7 @@ public class JedisClient {
 //        }
 //        return jedis;
 //    }
-
+​
     public static synchronized void set(String key, String value) throws Exception{
         Jedis jedis = jedisPool.getResource();
         try{
@@ -104,7 +104,7 @@ public class JedisClient {
 //            }
 //        }
 //    }
-
+​
     public static synchronized Set<String> zrange(String key, long start, long end) throws Exception{
         Jedis jedis = jedisPool.getResource();
         try {
@@ -112,14 +112,14 @@ public class JedisClient {
             jedisPool.returnResource(jedis);
             return results;
         }
-
+​
         catch (Exception e){
             jedisPool.returnBrokenResource(jedis);
-
+​
             throw new Exception("Tried to get range:"+key+" start:"+start+" end:"+end+" without success");
         }
     }
-
+​
     public static synchronized Set<String> zrangeByScore (String key, long start, long end) throws Exception{
         Jedis jedis = jedisPool.getResource();
         try {
@@ -127,64 +127,81 @@ public class JedisClient {
             jedisPool.returnResource(jedis);
             return results;
         }
-
+​
         catch (Exception e){
             jedisPool.returnBrokenResource(jedis);
-
+​
             throw new Exception("Tried  to get range:"+key+" start:"+start+" end:"+end+" without success");
-
+​
         }
     }
-
+​
     public static synchronized void zadd(String key, long score, String value) throws Exception{
         Jedis jedis = jedisPool.getResource();
         try {
             jedis.zadd(key,score,value);
             jedisPool.returnResource(jedis);
         }
-
+​
         catch (Exception e){
             jedisPool.returnBrokenResource(jedis);
             throw new Exception("Tried to persist :"+value+" without success");
-
+​
         }
     }
-
+​
+    public static synchronized long zrem(String key, String value) throws Exception{
+​
+        Jedis jedis = jedisPool.getResource();
+        try {
+            long result = jedis.zrem(key,value);
+            jedisPool.returnResource(jedis);
+            return result;
+        }
+​
+        catch (Exception e){
+            jedisPool.returnBrokenResource(jedis);
+​
+            throw new Exception("Tried to remove key: "+key+" value: "+value+" without success");
+​
+        }
+    }
+​
     public static synchronized void zremrangeByScore(String key, double start, double end) throws Exception{
-
+​
         Jedis jedis = jedisPool.getResource();
         try {
             jedis.zremrangeByScore(key,start,end);
             jedisPool.returnResource(jedis);
         }
-
+​
         catch (Exception e){
             jedisPool.returnBrokenResource(jedis);
-
+​
             throw new Exception("Tried to remove :"+key+" without success");
-
+​
         }
     }
-
+​
     public static synchronized Long zcount(String keyName, double min, double max) throws Exception{
-
+​
         Jedis jedis = jedisPool.getResource();
         try {
-
+​
             Long result = jedis.zcount(keyName, min, max);
             jedisPool.returnResource(jedis);
             return result;
         }
-
+​
         catch (Exception e){
             jedisPool.returnBrokenResource(jedis);
-
+​
             throw new Exception("Tried to zcount :"+keyName+" without success");
-
+​
         }
-
+​
     }
-
+​
     public static synchronized String get(String key) throws Exception{
         Jedis jedis = jedisPool.getResource();
         try{
@@ -194,25 +211,37 @@ public class JedisClient {
         }
         catch (Exception e){
             jedisPool.returnBrokenResource(jedis);
-
+​
             throw new Exception("Tried to get key:"+key+" without success");
-
-
+​
+​
         }
     }
-
+​
     public static synchronized void hmset (String mapName, String key, String json) throws Exception{
         Jedis jedis = jedisPool.getResource();
         try{
             jedis.hmset(mapName, Map.of(key, json));
             jedisPool.returnResource(jedis);
-
+​
         } catch (Exception e){
             jedisPool.returnBrokenResource(jedis);
             throw new Exception("Tried setting: "+mapName+" key : "+key+" without success");
         }
     }
-
+​
+    public static synchronized void hdel (String mapName, String key) throws Exception{
+        Jedis jedis = jedisPool.getResource();
+        try{
+            jedis.hdel(mapName, key);
+            jedisPool.returnResource(jedis);
+​
+        } catch (Exception e){
+            jedisPool.returnBrokenResource(jedis);
+            throw new Exception("Tried setting: "+mapName+" key : "+key+" without success");
+        }
+    }
+​
     public static synchronized Optional<String> hmget (String mapName, String key) throws Exception {
         Jedis jedis = jedisPool.getResource();
         try {
@@ -259,4 +288,6 @@ public static synchronized long zrem(String key, String value) throws Exception{
         throw new Exception("Tried to remove key: "+key+" value: "+value+" without success");
 
     }
+}
+​
 }
