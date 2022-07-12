@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/TECA-spring2022/final-project/issues"
   },
-  "homepage": "https://github.com/cameronnealbeck/cit262individualrepo#readme",
+  "homepage": "https://github.com/TECA-spring2022/final-project#readme",
   "dependencies": {
     "mocha": "^10.0.0",
     "node": "^18.5.0"
