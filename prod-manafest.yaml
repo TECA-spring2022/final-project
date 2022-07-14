@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: teca-stedi
+spec:
+  replicas: 1 #this is how many pods you will have
+  selector:
+    matchLabels:
+      app: teca-stedi
+  template:
+    metadata:
+      labels:
+        app: teca-stedi
+    spec:
+      containers:
+        - name: teca-stedi
+          image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
+          #you can get your project id in the google cloud
+          env:
+            - name: REDIS_HOST
+              value: "redis-stedi-dev"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
+            - name: KAFKA_BROKER
+          ports:
+            - containerPort: 4567 
+          resources:
+            limits:
+              cpu: ".5"
+              memory: "500Mi"
+            requests:
+              cpu: ".1"
+              memory: "250Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4567
+            initialDelaySeconds: 3
+            periodSeconds: 3          
+          
+---
+ #This three - separates two documents in a yaml file
+#addding load balancers handles the web or user traffic to the K8s deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: teca-stedi-loadbalancer
+spec:
+  selector:
+    app: teca-stedi
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 4567
