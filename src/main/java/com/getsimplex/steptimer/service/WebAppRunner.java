@@ -126,7 +126,7 @@ public class WebAppRunner {
 
         });
 
-        post("/login", (req, res)->loginUser(req, res));
+        //post("/login", (req, res)->loginUser(req, res));
         post("/twofactorlogin/:phoneNumber",(req, res) -> twoFactorLogin(req, res));
         post("/twofactorlogin", (req, res) ->{
             String response = "";
