@@ -4,6 +4,6 @@ steps:
     args:
       - run
       - --filename=prod-manifest.yaml
-      - --image=gcr.io/$PROJECT_ID/stedi-teca-prod:latest
+      - --image=gcr.io/$PROJECT_ID/stedi-teca-dev:latest
       - --location=us-east1-c
       - --cluster=cluster-2
