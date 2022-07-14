@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment 
 metadata:
-  name: teca-stedi
+  name: teca-stedi-prod
 spec:
   replicas: 1 #this is how many pods you will have
   selector:
     matchLabels:
-      app: teca-stedi
+      app: teca-stedi-prod
   template:
     metadata:
       labels:
-        app: teca-stedi
+        app: teca-stedi-prod
     spec:
       containers:
-        - name: teca-stedi
+        - name: teca-stedi-prod
           image: "gcr.io/teca-350016/stedi-teca-dev:latest" 
           #you can get your project id in the google cloud
           env:
@@ -49,7 +49,7 @@ metadata:
   name: teca-stedi-loadbalancer
 spec:
   selector:
-    app: teca-stedi
+    app: teca-stedi-prod
   type: LoadBalancer
   ports:
   - port: 80
